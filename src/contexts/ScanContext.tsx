@@ -290,40 +290,41 @@ export const ScanProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Initiate all fetches in parallel for better performance
       const responses = await Promise.all([
-        fetchUsers(token),
-        fetchTenantInfo(token),
-        checkInactiveUsers(token),
-        checkUsersWithoutMFA(token),
-        checkGroupsWithNoOwners(token),
-        checkPasswordNeverExpires(token),
-        checkRiskyUsers(token),
-        checkEmailForwardingRules(token),
-        checkPrivilegedRoles(token),
-        checkGuestUsers(token),
-        checkSharedMailboxes(token),
-        checkDeviceCompliance(token),
-        checkConditionalAccessPolicies(token),
-        checkUnusedLicenses(token),
-        checkSecurityDefaultsStatus(token),
-        checkAuthenticationStrengthPolicies(token),
-        checkNamedLocations(token),
-        checkLegacyAuthenticationStatus(token),
-        checkSelfServicePasswordReset(token),
-        checkAdministrativeUnits(token),
-        checkPrivilegedIdentityManagement(token),
-        checkSharePointExternalSharing(token),
-        checkDataLossPrevention(token),
-        checkRetentionPolicies(token),
-        checkOrganizationSettings(token),
-        checkDefenderForOffice(token),
-        checkIntuneCompliancePolicies(token),
-        checkExchangeTransportRules(token),
-        checkEmailAuthentication(token)
+        fetchUsers(token), //0
+        fetchTenantInfo(token), //1
+        checkInactiveUsers(token), //2
+        checkUsersWithoutMFA(token), //3
+        checkGroupsWithNoOwners(token), //4
+        checkPasswordNeverExpires(token), //5
+        checkRiskyUsers(token), //6
+        checkEmailForwardingRules(token), //7
+        checkPrivilegedRoles(token), //8
+        checkGuestUsers(token), //9
+        checkSharedMailboxes(token), //10
+        checkDeviceCompliance(token), //11
+        checkConditionalAccessPolicies(token), //12
+        checkUnusedLicenses(token), //13
+        checkSecurityDefaultsStatus(token), //14
+        checkAuthenticationStrengthPolicies(token), //15
+        checkNamedLocations(token), //16
+        checkLegacyAuthenticationStatus(token), //17
+        checkSelfServicePasswordReset(token), //18
+        checkAdministrativeUnits(token), //19
+        checkPrivilegedIdentityManagement(token), //20
+        checkSharePointExternalSharing(token), //21
+        checkDataLossPrevention(token), //22
+        checkRetentionPolicies(token), //23
+        checkOrganizationSettings(token), //24
+        checkDefenderForOffice(token), //25
+        checkIntuneCompliancePolicies(token), //26
+        checkExchangeTransportRules(token), //27
+        checkEmailAuthentication(token) //28
       ]);
   
       // Map of API endpoints to their response indices
       const endpointMap = {
-        'users': [0, 2, 3],
+        'users': [0, 3],
+        'inactiveUsers': [2],
         'organization': [1],
         'groups': [4],
         'users/passwordPolicies': [5],
@@ -342,7 +343,7 @@ export const ScanProvider: React.FC<{ children: React.ReactNode }> = ({ children
         'administrativeUnits': [19],
         'roleManagement/directory/roleSettings': [20],
         'admin/sharepoint/settings': [21],
-        'security/dataLossPreventionPolicies': [22],
+        'informationProtection/dataLossPreventionPolicies': [22],
         'security/informationProtection/policy/labels': [23],
         'security/threatIntelligence/antiphishPolicies': [25],
         'deviceManagement/deviceCompliancePolicies': [26],

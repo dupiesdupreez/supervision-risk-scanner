@@ -22,7 +22,8 @@ export async function callGraphApi<T>(
   endpoint: string,
   accessToken: string,
   method: string = "GET",
-  body?: any
+  body?: any,
+  eventualConsistency?: boolean
 ): Promise<GraphApiResponse<T>> {
   if (!accessToken) {
     return {
@@ -33,12 +34,18 @@ export async function callGraphApi<T>(
   }
 
   try {
+    let customHeaders = {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    }
+
+    if (eventualConsistency) {
+      customHeaders["ConsistencyLevel"] = "eventual";
+    }
+
     const requestOptions: RequestInit = {
       method,
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json"
-      }
+      headers: customHeaders,
     };
 
     if (body && (method === "POST" || method === "PATCH" || method === "PUT")) {
@@ -280,8 +287,11 @@ export async function checkEmailForwardingRules(
   try {
     // Using the /beta endpoint to get forwarding information
     const response = await callGraphApi<any>(
-      "/users?$select=id,displayName,userPrincipalName,mail,mailboxSettings&$filter=assignedLicenses/$count ne 0 and mail ne null",
-      accessToken
+      "/users?$select=id,displayName,userPrincipalName,mail&$filter=assignedLicenses/$count ne 0 and mail ne null&$count=true",
+      accessToken,
+      undefined, 
+      undefined,
+      true
     );
     
     return response;
@@ -360,8 +370,11 @@ export async function checkSharedMailboxes(
   try {
     // First get users that might be shared mailboxes
     const response = await callGraphApi<any>(
-      "/users?$select=id,displayName,userPrincipalName,mail,accountEnabled,recipientType,recipientTypeDetails&$filter=assignedLicenses/$count eq 0",
-      accessToken
+      "/users?$select=id,displayName,userPrincipalName,mail,accountEnabled,recipientType,recipientTypeDetails&$filter=assignedLicenses/$count eq 0&$count=true",
+      accessToken,
+      undefined,
+      undefined,
+      true
     );
     
     return response;
@@ -449,8 +462,11 @@ export async function checkUnusedLicenses(
     
     // Then get users with licenses
     const usersResponse = await callGraphApi<any>(
-      "/users?$select=id,displayName,userPrincipalName,assignedLicenses,signInActivity&$filter=assignedLicenses/$count ne 0",
-      accessToken
+      "/users?$select=id,displayName,userPrincipalName,assignedLicenses,signInActivity&$filter=assignedLicenses/$count ne 0&$count=true",
+      accessToken,
+      undefined,
+      undefined,
+      true
     );
     
     if (!usersResponse.success) {
@@ -689,8 +705,11 @@ export async function checkMailboxPermissions(
   try {
     // Get all users with mailboxes
     const usersResponse = await callGraphApi<any>(
-      "/users?$select=id,displayName,userPrincipalName,mail&$filter=mail ne null",
-      accessToken
+      "/users?$select=id,displayName,userPrincipalName,mail&$filter=mail ne null&$count=true",
+      accessToken,
+      undefined,
+      undefined,
+      true
     );
     
     if (!usersResponse.success) {
@@ -1065,8 +1084,12 @@ export async function checkDataLossPrevention(
   accessToken: string
 ): Promise<GraphApiResponse<any>> {
   try {
+    // const response = await callGraphApi<any>(
+    //   "/security/dataLossPreventionPolicies",
+    //   accessToken
+    // );
     const response = await callGraphApi<any>(
-      "/security/dataLossPreventionPolicies",
+      "/informationProtection/dataLossPreventionPolicies",
       accessToken
     );
     
@@ -1514,8 +1537,11 @@ export async function checkDeviceVulnerabilities(
   try {
     // Get vulnerable devices
     const devicesResponse = await callGraphApi<any>(
-      "/deviceManagement/managedDevices?$select=id,deviceName,operatingSystem,osVersion,complianceState,jailBroken,managementState,model,manufacturer&$filter=complianceState ne 'compliant'",
-      accessToken
+      "/deviceManagement/managedDevices?$select=id,deviceName,operatingSystem,osVersion,complianceState,jailBroken,managementState,model,manufacturer&$filter=complianceState ne 'compliant'&$count=true",
+      accessToken,
+      undefined,
+      undefined,
+      true
     );
     
     // Get device compliance policies

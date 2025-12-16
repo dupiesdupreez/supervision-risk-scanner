@@ -493,7 +493,7 @@
                       </div>
                       <div className="flex items-center justify-between group relative">
                         <span className="text-sm">Inactive Users</span>
-                        {hasApiError(['users', 'reports/credentialUserRegistrationDetails']) ? (
+                        {hasApiError(['inactiveUsers', 'reports/credentialUserRegistrationDetails']) ? (
                           <div className="relative">
                             <AlertTriangle className="h-4 w-4 text-amber-500" />
                             <div className="hidden group-hover:block absolute z-10 -top-2 right-6 w-48 p-2 bg-amber-50 text-xs text-amber-900 rounded shadow-lg border border-amber-200">
@@ -612,7 +612,7 @@
                       </div>
                       <div className="flex items-center justify-between group relative">
                         <span className="text-sm">M365 Backups</span>
-                        {hasApiError(['admin/serviceAnnouncement/issues', 'security/dataLossPreventionPolicies']) ? (
+                        {hasApiError(['admin/serviceAnnouncement/issues', 'informationProtection/dataLossPreventionPolicies']) ? (
                           <div className="relative">
                             <AlertTriangle className="h-4 w-4 text-amber-500" />
                             <div className="hidden group-hover:block absolute z-10 -top-2 right-6 w-48 p-2 bg-amber-50 text-xs text-amber-900 rounded shadow-lg border border-amber-200">
